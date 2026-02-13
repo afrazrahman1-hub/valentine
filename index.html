@@ -7,53 +7,29 @@
       margin: 0;
       padding: 0;
       text-align: center;
-      background: linear-gradient(to bottom, #ffe6f2, #fff0f5);
       font-family: 'Comic Sans MS', cursive;
       overflow: hidden;
+      transition: background 2s;
     }
 
-    h1 {
-      margin-top: 120px;
-      font-size: 40px;
-      color: #ff66a3;
-    }
-
-    p {
-      font-size: 18px;
-      color: #ff85b3;
-    }
-
-    button {
-      padding: 12px 25px;
-      font-size: 18px;
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-      margin: 20px;
-      transition: 0.3s;
-    }
-
-    #yes {
-      background-color: #ff66a3;
-      color: white;
-    }
-
-    #yes:hover {
-      background-color: #ff3385;
-      transform: scale(1.1);
-    }
-
-    #no {
-      background-color: white;
-      color: #ff66a3;
+    section {
       position: absolute;
+      width: 100%;
+      height: 100%;
+      padding-top: 100px;
+      opacity: 0;
+      transition: opacity 2s;
     }
+    section.active { opacity: 1; }
 
-    .heart {
+    h1 { font-size: 40px; color: #ff66a3; }
+    p { font-size: 18px; color: #ff85b3; max-width: 600px; margin: 20px auto; }
+
+    .heart, .flower, .click-heart {
       position: fixed;
-      color: #ff99cc;
       font-size: 20px;
       animation: float 5s linear infinite;
+      pointer-events: none;
     }
 
     @keyframes float {
@@ -62,30 +38,51 @@
     }
   </style>
 </head>
-
 <body>
 
-  <h1>Will You Be My Valentine tashfia? 💕</h1>
-  <p>You make my world softer and sweeter every day 🥺💖</p>
+  <!-- Background music -->
+  <audio autoplay loop>
+    <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
+  </audio>
 
-  <button id="yes" onclick="yesClicked()">Yes, of course 💗</button>
-  <button id="no" onmouseover="moveButton()">No 🙈</button>
+  <!-- Page 1 -->
+  <section class="active" id="page1">
+    <h1>Will You Be My Valentine tashfia? 💕</h1>
+    <p>You make my world softer and sweeter every day 🥺💖</p>
+  </section>
+
+  <!-- Page 2 -->
+  <section id="page2">
+    <h1>Beautiful Flowers for You 🌸</h1>
+    <p>"Every flower is a soul blossoming in nature, just like your heart blossoms in mine." 💐</p>
+  </section>
+
+  <!-- Page 3 -->
+  <section id="page3">
+    <h1>About Your Beauty 😍</h1>
+    <p>Your smile lights up my darkest days, your eyes hold endless stories, and your soul is pure magic. Simply put, you are breathtaking in every way , those beattiful cheeks ufff omgg and the hair wow i love every part that belongs to your body💖</p>
+  </section>
+
+  <!-- Page 4 -->
+  <section id="page4">
+    <h1>My Love Letter ✨</h1>
+    <p>Dear love,</p>
+    <p>I just want you to know that every moment with you feels like a dream. You make me laugh, you make me think, and most importantly, you make me feel alive. I promise to cherish you, support you, and make you smile every single day. You are my sweetheart, my soul,my jaan, my everything. 💗</p>
+    <p>Forever yours, <br> [Afraz]</p>
+  </section>
 
   <script>
-    function yesClicked() {
-      document.body.innerHTML = `
-        <h1>Yayyyy 🥰💞</h1>
-        <p>I promise to make you smile every single day 💗</p>
-      `;
-    }
+    let currentPage = 1;
+    const totalPages = 4;
 
-    function moveButton() {
-      var x = Math.random() * window.innerWidth;
-      var y = Math.random() * window.innerHeight;
-      document.getElementById("no").style.left = x + "px";
-      document.getElementById("no").style.top = y + "px";
-    }
+    // Auto page transition every 6 seconds
+    setInterval(() => {
+      document.getElementById("page" + currentPage).classList.remove("active");
+      currentPage = currentPage % totalPages + 1;
+      document.getElementById("page" + currentPage).classList.add("active");
+    }, 6000);
 
+    // Floating hearts
     function createHeart() {
       const heart = document.createElement("div");
       heart.classList.add("heart");
@@ -93,14 +90,44 @@
       heart.style.left = Math.random() * 100 + "vw";
       heart.style.animationDuration = (Math.random() * 3 + 2) + "s";
       document.body.appendChild(heart);
-
-      setTimeout(() => {
-        heart.remove();
-      }, 5000);
+      setTimeout(() => heart.remove(), 5000);
     }
-
     setInterval(createHeart, 300);
+
+    // Flowers for page 2
+    function createFlower() {
+      if (currentPage !== 2) return;
+      const flower = document.createElement("div");
+      flower.classList.add("flower");
+      flower.innerHTML = "🌸";
+      flower.style.left = Math.random() * 100 + "vw";
+      flower.style.animationDuration = (Math.random() * 4 + 2) + "s";
+      document.body.appendChild(flower);
+      setTimeout(() => flower.remove(), 6000);
+    }
+    setInterval(createFlower, 500);
+
+    // Click hearts
+    document.body.addEventListener("click", function(e){
+      const clickHeart = document.createElement("div");
+      clickHeart.classList.add("click-heart");
+      clickHeart.innerHTML = "💖";
+      clickHeart.style.left = e.clientX + "px";
+      clickHeart.style.top = e.clientY + "px";
+      clickHeart.style.fontSize = Math.random() * 30 + 15 + "px";
+      document.body.appendChild(clickHeart);
+      setTimeout(() => clickHeart.remove(), 1000);
+    });
+
+    // Background gradient animation
+    let colors = ["#ffe6f2", "#fff0f5", "#ffd6e8", "#ffe0f0"];
+    let index = 0;
+    setInterval(() => {
+      document.body.style.background = `linear-gradient(to bottom, ${colors[index]}, ${colors[(index+1)%colors.length]})`;
+      index = (index + 1) % colors.length;
+    }, 4000);
   </script>
 
 </body>
 </html>
+
